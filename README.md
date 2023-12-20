@@ -10,6 +10,11 @@ TurboTune is a Python utility designed to prepare datasets for fine-tuning OpenA
 - Ensures the proper formatting of assistant responses.
 - Outputs the data in JSONL format, ready for model fine-tuning.
 
+## Important Notes
+
+- When preparing your CSV dataset, please refer to OpenAI's documentation for fine-tuning: [OpenAI Fine-Tuning Guide](https://platform.openai.com/docs/guides/fine-tuning).
+- TurboTune is developed to address the need for a tool that specifically prepares data for GPT-3.5-turbo models. The existing `openai tools fine_tunes.prepare_data` command primarily supports legacy fine-tuning with prompt and completion pairs, which differs from the conversational format required for GPT-3.5-turbo.
+
 ## Prerequisites
 
 - Python 3.x
@@ -18,7 +23,6 @@ TurboTune is a Python utility designed to prepare datasets for fine-tuning OpenA
 ## Installation
 
 1. Clone the repository:
-
 ```
 git clone https://github.com/ac1982/TurboTune.git
 ```
