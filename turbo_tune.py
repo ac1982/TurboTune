@@ -2,37 +2,38 @@ import pandas as pd
 import json
 import sys
 import os
+from colorama import Fore, Style
 
 def process_csv_file(input_file):
-    # 检查文件是否存在
+    # Check if file exists
     if not os.path.exists(input_file):
-        print(f"文件 {input_file} 不存在。")
+        print(f"{Fore.RED}文件 {input_file} 不存在。{Style.RESET_ALL}")
         return
 
     # Load the CSV file
     df = pd.read_csv(input_file)
 
-    # 检查是否所有必要列都存在
+    # Check if all necessary columns exist
     required_columns = ['system', 'user', 'assistant']
     if not all(column in df.columns for column in required_columns):
-        print("CSV文件必须包含'system', 'user', 和 'assistant'这三列。")
+        print(f"{Fore.YELLOW}CSV文件必须包含'system', 'user', 和 'assistant'这三列。{Style.RESET_ALL}")
         return
 
     # Identify duplicates in 'user'
     duplicates = df[df.duplicated(subset=['user'], keep=False)]
     if not duplicates.empty:
-        print("First 10 duplicates based on 'user':")
-        print(duplicates.head(10))
+        print(f"{Fore.CYAN}First 10 duplicates based on 'user':{Style.RESET_ALL}")
+        print(duplicates.head(10).to_string(index=False))  # Using to_string for better formatting
 
-        # 显示删除的重复数据数量
-        print(f"Removing {len(duplicates) - len(duplicates.drop_duplicates(subset=['user']))} duplicate rows.")
+        # Display the number of duplicate rows to be removed
+        print(f"{Fore.MAGENTA}Removing {len(duplicates) - len(duplicates.drop_duplicates(subset=['user']))} duplicate rows.{Style.RESET_ALL}")
 
     # Remove duplicates in 'user'
     df = df.drop_duplicates(subset=['user'])
 
     # Check if data has at least 100 rows
     if len(df) < 100:
-        print("The dataset should contain at least 100 rows.")
+        print(f"{Fore.RED}The dataset should contain at least 100 rows.{Style.RESET_ALL}")
         return
 
     # Ensure "assistant" ends with '\n'
@@ -59,7 +60,7 @@ def process_csv_file(input_file):
         for entry in jsonl_data:
             file.write(json.dumps(entry) + '\n')
 
-    print(f"JSONL file '{output_file}' has been created.")
+    print(f"{Fore.GREEN}JSONL file '{output_file}' has been created.{Style.RESET_ALL}")
 
 def print_help():
     print("Assists in Preparing JSONL Files for Fine-Tuning GPT-3.5-turbo and Newer Models.")
@@ -76,7 +77,7 @@ def main():
     if args[0] == "-f" and len(args) == 2:
         process_csv_file(args[1])
     else:
-        print("Invalid arguments.")
+        print(f"{Fore.RED}Invalid arguments.{Style.RESET_ALL}")
         print_help()
 
 if __name__ == "__main__":
