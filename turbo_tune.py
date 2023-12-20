@@ -62,9 +62,24 @@ def process_csv_file(input_file):
 
     print(f"{Fore.GREEN}JSONL file '{output_file}' has been created.{Style.RESET_ALL}")
 
+def validate_jsonl(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            for line_number, line in enumerate(file, start=1):
+                try:
+                    json.loads(line)
+                except json.JSONDecodeError as e:
+                    print(f"{Fore.RED}Invalid JSON at line {line_number}: {e}{Style.RESET_ALL}")
+                    return False
+        return True
+    except FileNotFoundError:
+        print(f"{Fore.RED}File not found: {file_path}{Style.RESET_ALL}")
+        return False
+
 def print_help():
     print("Assists in Preparing JSONL Files for Fine-Tuning GPT-3.5-turbo and Newer Models.")
     print("-f [filename.csv]: Specify the source CSV file.")
+    print("-v [filename.jsonl]: Validate the JSONL file.")
     print("-h: Display help.")
 
 def main():
@@ -76,6 +91,11 @@ def main():
 
     if args[0] == "-f" and len(args) == 2:
         process_csv_file(args[1])
+    elif args[0] == "-v" and len(args) == 2:
+        if validate_jsonl(args[1]):
+            print(f"{Fore.GREEN}The JSONL file is valid.{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.RED}The JSONL file is not valid.{Style.RESET_ALL}")
     else:
         print(f"{Fore.RED}Invalid arguments.{Style.RESET_ALL}")
         print_help()
